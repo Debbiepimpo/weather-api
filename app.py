@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime, date
 
 def check_weather_by_ip():
     ip = "24.48.0.1"
@@ -11,10 +12,11 @@ def check_weather_by_ip():
     weather_url= f'http://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API_KEY}'
     weatherData = requests.get(weather_url).json()
     weather_list = weatherData["list"]
-    mydate = "2022-02-01 15:00:00"
+    today = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+    mydate = datetime.strptime(today, "%Y-%m-%d %H:%M:%S")
 
-    forecast_temp = [item["main"] for item in weather_list if item["dt_txt"] == mydate]
-    forecast_weather = [item["weather"] for item in weather_list if item["dt_txt"] == mydate]
+    forecast_temp = [item["main"] for item in weather_list if datetime.strptime(item["dt_txt"], "%Y-%m-%d %H:%M:%S").date() == mydate.date()]
+    forecast_weather = [item["weather"] for item in weather_list if datetime.strptime(item["dt_txt"], "%Y-%m-%d %H:%M:%S").date() == mydate.date()]
     
     total_forecast = forecast_temp + forecast_weather
     return total_forecast
